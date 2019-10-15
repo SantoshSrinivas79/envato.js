@@ -3,16 +3,11 @@ var Request = require('request');
 var QueryString = require('querystring');
 
 function makeRequest(path) {
-    console.log("The path is");
-    console.log(path);
-   
     var method = (arguments.length > 1) ? arguments[1] : 'GET';
 
     return function() {
         var currentPath = path;
         var args = (arguments.length > 0) ? ((typeof arguments[0] === 'object') ? arguments[0] : {}) : {};
-        console.log("args is");
-        console.log(args);
 
         for (var key in args) {
             if (path.indexOf('%'+key) >= 0) {
@@ -25,10 +20,7 @@ function makeRequest(path) {
         var uri = 'https://api.envato.com' + currentPath + ((query !== '?') ? query : '');
         var token = this.token;
         var userAgent = this.userAgent;
-        console.log("The uri is");
-        console.log(uri);
-        console.log("The query is");
-        console.log(query);
+
         return new Promise(function(resolve, reject) {
             Request({
                 uri: uri,
