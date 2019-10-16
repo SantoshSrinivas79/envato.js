@@ -37,6 +37,31 @@ function makeRequest(path) {
                 if (response.statusCode === 403) return reject(new Error('Access Denied'));
                 if (response.statusCode === 404) return reject(new Error('Not Found'));
                 if (response.statusCode === 500) return reject(new Error('Internal Server Error'));
+
+                /**
+                 * Delay in seconds.
+                 *
+                 * @param seconds
+                 * @returns {Promise<*>}
+                 */
+                delay = async function(seconds) {
+                    return new Promise((resolve, reject) => {
+
+                        setTimeout(() => {
+                            resolve("{}");
+                        }, seconds * 1000);
+                    });
+                }
+
+                // Handle [Rate Limiting](https://build.envato.com/api/#rate-limit)
+                if (response.statusCode === 429) {
+                    console.log(response);
+                    var wait_time = response.headers['retry-after'];
+                    console.log("Need to delay for: " + wait_time);
+
+                    return resolve(wait_time);
+                }
+
                 if (response.statusCode !== 200) return reject(new Error('Error code ' + response.statusCode + ': ' + response.statusMessage ));
 
                 try {
